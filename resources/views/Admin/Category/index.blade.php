@@ -1,5 +1,13 @@
 <x-admin-layout>
-    <x-slot name="content"> 
+    <x-slot name="content">  
+        @if (session()->has("success"))
+        <x-alert-success>
+            <span>
+                {{session()->get("success")}}
+           </span>
+        </x-alert-success>
+        @endif  
+        {{-- <img src="{{asset('/storage/images/1711897600.event.jpg')}}" alt="fsdfdsf" > --}}
             <div class=" container mx-auto">
                 <h1  class=" text-white mb-4 text-xl" >Categories</h1>
                 <div class=" flex justify-end mx-3 my-4">

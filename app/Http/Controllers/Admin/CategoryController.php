@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -30,7 +32,26 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "name" => "string",
+            "description" => "string",
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048'
+        ]);
+        // $path = $request->image->path();
+
+        $path = $request->file('image')->store('images', 'public');
+
+        Category::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $path,
+        ]);
+
+        // Gate::allows()
+
+
+        // return redirect("admin/categories")->back()->with('success', 'File Upload Successfully!!'); 
+        return redirect()->route("admin.categories.store")->with("success", 'category created successfuly ');
     }
 
     /**
