@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
@@ -22,7 +23,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return view("Admin.Menu.create");
     }
 
     /**
@@ -30,7 +31,23 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $validationData = $request->validate([
+            "name" => "required|string",
+            "description" => "required|string",
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048',
+            "price" => "required|numeric|min:0|digits_between:1,12"
+        ]);
+        // $path = $request->image->path();
+
+        $path = $request->file('image')->store('images', 'public');
+        $validationData["image"] = $path;
+
+        //save data
+
+        Menu::create($validationData);
+
+        return redirect()->route("admin.menus.index")->with("success", "menu created successfuly");
     }
 
     /**
@@ -46,7 +63,8 @@ class MenuController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $menu =  Menu::findOrFail($id);
+        return view("Admin.Menu.edite", compact("menu"));
     }
 
     /**
@@ -54,7 +72,22 @@ class MenuController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validationData = $request->validate([
+            "name" => "required|string",
+            "description" => "required|string",
+            'image' => 'mimes:png,jpg,jpeg|max:2048',
+            "price" => "required|numeric|min:0|digits_between:1,12"
+        ]);
+        $menu = Menu::findOrFail($id);
+        if ($request->hasFile("image")) {
+            if (Storage::exists("public/" . $menu->image)) {
+                Storage::delete("public/" . $menu->image);
+                $path = $request->file('image')->store('images', 'public');
+                $validationData["image"] = $path;
+            }
+        }
+        $menu->update($validationData);
+        return redirect()->route("admin.menus.index")->with("success", "menu update successfuly");
     }
 
     /**
@@ -62,6 +95,11 @@ class MenuController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $menu = Menu::findOrFail($id);
+        if (Storage::exists("public/" . $menu->image)) {
+            Storage::delete("public/" . $menu->image);
+        }
+        $menu->delete();
+        return redirect()->route("admin.menus.index")->with("success", "menu deleted successfuly");
     }
 }
