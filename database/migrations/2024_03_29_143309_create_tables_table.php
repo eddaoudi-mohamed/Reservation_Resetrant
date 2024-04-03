@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->integer("guest_number");
-            $table->enum("status", ["available", "notavailable"])->default("available");
+            $table->enum("status", ["available", "notavailable", "pending"])->default("available");
             $table->string("location");
 
             $table->timestamps();

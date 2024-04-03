@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +24,8 @@ class MenuController extends Controller
      */
     public function create()
     {
-        return view("Admin.Menu.create");
+        $categories = Category::all();
+        return view("Admin.Menu.create", compact("categories"));
     }
 
     /**
@@ -31,22 +33,23 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-
         $validationData = $request->validate([
             "name" => "required|string",
             "description" => "required|string",
             'image' => 'required|mimes:png,jpg,jpeg|max:2048',
-            "price" => "required|numeric|min:0|digits_between:1,12"
+            "price" => "required|numeric|min:0",
         ]);
         // $path = $request->image->path();
+
 
         $path = $request->file('image')->store('images', 'public');
         $validationData["image"] = $path;
 
         //save data
-
-        Menu::create($validationData);
-
+        $menu =  Menu::create($validationData);
+        if ($request->has("categories")) {
+            $menu->categories()->attach($request->categories);
+        }
         return redirect()->route("admin.menus.index")->with("success", "menu created successfuly");
     }
 
@@ -64,7 +67,9 @@ class MenuController extends Controller
     public function edit(string $id)
     {
         $menu =  Menu::findOrFail($id);
-        return view("Admin.Menu.edite", compact("menu"));
+        $categories = Category::all();
+
+        return view("Admin.Menu.edite", compact("menu", "categories"));
     }
 
     /**
@@ -76,7 +81,7 @@ class MenuController extends Controller
             "name" => "required|string",
             "description" => "required|string",
             'image' => 'mimes:png,jpg,jpeg|max:2048',
-            "price" => "required|numeric|min:0|digits_between:1,12"
+            "price" => "required|numeric|min:0"
         ]);
         $menu = Menu::findOrFail($id);
         if ($request->hasFile("image")) {
@@ -87,6 +92,9 @@ class MenuController extends Controller
             }
         }
         $menu->update($validationData);
+        if ($request->has("categories")) {
+            $menu->categories()->sync($request->categories);
+        }
         return redirect()->route("admin.menus.index")->with("success", "menu update successfuly");
     }
 

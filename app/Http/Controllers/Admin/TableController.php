@@ -22,7 +22,7 @@ class TableController extends Controller
      */
     public function create()
     {
-        //
+        return view("Admin.Table.create");
     }
 
     /**
@@ -30,7 +30,15 @@ class TableController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            "name" => "required|string",
+            "guest_number" => "required|numeric|min:1",
+            "status" => "required",
+            "location" => "required",
+        ]);
+        Table::create($data);
+
+        return to_route("admin.tables.index")->with("success", "Table Created Succesfuly");
     }
 
     /**
@@ -46,7 +54,8 @@ class TableController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $table = Table::findOrFail($id);
+        return view("Admin.Table.edite", compact("table"));
     }
 
     /**
@@ -54,7 +63,15 @@ class TableController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $table = Table::findOrFail($id);
+        $data = $request->validate([
+            "name" => "required|string",
+            "guest_number" => "required|numeric|min:1",
+            "status" => "required",
+            "location" => "required",
+        ]);
+        $table->update($data);
+        return to_route("admin.tables.index")->with("success", "Table Updated  Succesfuly");
     }
 
     /**
@@ -62,6 +79,8 @@ class TableController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $table = Table::findOrFail($id);
+        $table->delete();
+        return to_route("admin.tables.index")->with("success", "Table Deleted  Succesfuly");
     }
 }

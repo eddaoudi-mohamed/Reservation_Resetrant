@@ -38,6 +38,18 @@
           @enderror
       </div>
 
+      <div class="mb-5"> 
+        <select id="categories" name="categories[]" multiple="multiple" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          {{-- <option selected>Choose a category</option> --}}
+          @foreach ($categories as $item)
+          <option value="{{$item->id}}" @selected($menu->categories->contains($item->id))>{{$item->name}}</option>
+          @endforeach
+        </select>
+        @error('categories')
+        <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span> {{$message}}</p> 
+        @enderror
+      </div>
+
       <button type="submit" class="p-2.5 text-sm font-medium w-full bg-indigo-500 hover:bg-indigo-700 text-lime-50 rounded-lg" >Update Menu</button>
    </form>
 

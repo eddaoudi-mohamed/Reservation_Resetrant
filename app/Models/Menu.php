@@ -9,4 +9,9 @@ class Menu extends Model
 {
     use HasFactory;
     protected $fillable = ["name", "description", "image", "price"];
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
 }
