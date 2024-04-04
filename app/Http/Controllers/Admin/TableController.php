@@ -81,6 +81,7 @@ class TableController extends Controller
     {
         $table = Table::findOrFail($id);
         $table->delete();
+        $table->reservations()->delete();
         return to_route("admin.tables.index")->with("success", "Table Deleted  Succesfuly");
     }
 }

@@ -107,6 +107,7 @@ class MenuController extends Controller
         if (Storage::exists("public/" . $menu->image)) {
             Storage::delete("public/" . $menu->image);
         }
+        $menu->categories()->detach();
         $menu->delete();
         return redirect()->route("admin.menus.index")->with("success", "menu deleted successfuly");
     }

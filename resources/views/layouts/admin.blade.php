@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body  class="font-sans antialiased min-h-screen">
-        <div class="min-h-screen flex gap-4 bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen fixed w-full flex gap-4 bg-gray-100 dark:bg-gray-900">
             {{-- @include('layouts.navigation') --}}             
             <aside id="default-sidebar" class="top-0  w-[296px] left-0 hidden md:block  h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
                 <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -65,7 +65,7 @@
                 </ul>
                 </div>
             </aside>
-            <div class=" mr-8 mt-8  p-4  w-full h-screen ">
+            <div class=" mr-8 mt-8  p-4 pb-16  w-full h-screen overflow-y-scroll">
                 @if (isset($content))
                 {{ $content }}
                 @endif
