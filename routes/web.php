@@ -9,7 +9,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -25,5 +25,10 @@ Route::middleware(['auth', 'is_Admin'])->name('admin.')->prefix('admin')->group(
     Route::resource('/tables', TableController::class);
     Route::resource('/resarvations', ResarvationController::class);
 });
+
+Route::get("/", function () {
+    return view("index");
+});
+
 
 require __DIR__ . '/auth.php';
